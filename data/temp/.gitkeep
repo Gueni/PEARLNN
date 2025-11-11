@@ -1,0 +1,16 @@
+# This file ensures the temp directory exists in the repository
+# Temporary files during processing are stored here
+# This directory is gitignored and should be regularly cleaned
+
+# Expected structure:
+# data/temp/
+# ├── processing/
+# │   ├── temp_waveform.csv
+# │   ├── extracted_image_data/
+# │   └── intermediate_results/
+# ├── uploads/
+# │   └── pending_uploads/
+# ├── downloads/
+# │   └── incomplete_downloads/
+# └── logs/
+#     └── process_logs/

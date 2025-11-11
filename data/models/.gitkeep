@@ -1,0 +1,16 @@
+# This file ensures the models directory exists in the repository
+# Downloaded community models and locally trained models are stored here
+# This directory is gitignored to avoid committing large model files
+
+# Expected structure:
+# data/models/
+# ├── community/
+# │   ├── inductor_model.pt
+# │   ├── inductor_model_metadata.json
+# │   └── model_versions.json
+# ├── local/
+# │   ├── trained_inductor_model.pt
+# │   └── training_checkpoints/
+# └── cache/
+#     ├── feature_cache.pkl
+#     └── processing_cache/

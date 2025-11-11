@@ -1,0 +1,300 @@
+# Inductor Component Configuration
+# Configuration for inductor parameter extraction and analysis
+
+component: "inductor"
+
+# Inductor parameters to extract
+parameters: ["L", "DCR", "Q_factor", "SRF", "Isat", "ACR"]
+
+# Parameter definitions and units
+parameter_definitions:
+  L:
+    name: "Inductance"
+    units: "H"
+    description: "Primary inductance value"
+    precision: 9  # Scientific notation precision
+    
+  DCR:
+    name: "DC Resistance" 
+    units: "Ω"
+    description: "Direct current resistance of winding"
+    precision: 6
+    
+  Q_factor:
+    name: "Quality Factor"
+    units: ""
+    description: "Ratio of reactance to resistance at specific frequency"
+    precision: 3
+    
+  SRF:
+    name: "Self-Resonant Frequency"
+    units: "Hz"
+    description: "Frequency where inductor becomes self-resonant"
+    precision: 3
+    
+  Isat:
+    name: "Saturation Current"
+    units: "A"
+    description: "Current where inductance drops by specified percentage"
+    precision: 6
+    
+  ACR:
+    name: "AC Resistance"
+    units: "Ω"
+    description: "Effective resistance including skin and proximity effects"
+    precision: 6
+
+# Parameter ranges for validation and normalization
+parameter_ranges:
+  L:
+    min: 1e-9
+    max: 1.0
+    typical: [1e-6, 100e-6]  # Common range for power inductors
+    
+  DCR:
+    min: 0.001
+    max: 100.0
+    typical: [0.01, 1.0]
+    
+  Q_factor:
+    min: 1
+    max: 500
+    typical: [20, 100]
+    
+  SRF:
+    min: 1e6
+    max: 10e9
+    typical: [10e6, 100e6]
+    
+  Isat:
+    min: 0.001
+    max: 100.0
+    typical: [0.1, 10.0]
+    
+  ACR:
+    min: 0.001
+    max: 10.0
+    typical: [0.01, 0.5]
+
+# Feature extraction configuration
+feature_extraction:
+  # Impedance analysis settings
+  impedance_analysis:
+    frequency_bands:
+      low: [100, 1e3]      # For DCR and low-frequency inductance
+      mid: [1e3, 100e3]    # For main inductance measurement
+      high: [100e3, 10e6]  # For SRF and high-frequency effects
+    reference_impedance: 50  # Ω
+    min_impedance_points: 20
+    
+  # Q-factor measurement
+  q_measurement:
+    measurement_frequency: 1e6  # Hz
+    bandwidth_method: "3dB"     # 3dB, 6dB, or specified
+    min_q_detectable: 5
+    
+  # Saturation analysis
+  saturation_detection:
+    inductance_drop_threshold: 0.1  # 10% drop indicates saturation
+    current_sweep_points: 10
+    detect_soft_saturation: true
+    
+  # Resonance detection
+  resonance:
+    detection_method: "peak_impedance"  # peak_impedance, phase_crossing
+    min_quality_factor: 5
+    bandwidth_calculation: true
+    
+  # Required features for inductor analysis
+  required_features:
+    - "impedance_vs_frequency"
+    - "resonance_peak"
+    - "dc_resistance"
+    - "q_factor_measurement"
+    - "saturation_characteristics"
+    
+  # Derived features
+  derived_features:
+    - "inductance_vs_frequency"
+    - "ac_resistance_vs_frequency" 
+    - "quality_factor_vs_frequency"
+    - "saturation_current_estimate"
+
+# Model configuration for inductors
+model:
+  # Architecture
+  input_features: 35
+  hidden_layers: [512, 256, 128]
+  specialized_layers: [64, 32]  # Inductor-specific feature processing
+  
+  # Training parameters
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 1000
+  early_stopping_patience: 50
+  
+  # Inductor-specific loss weights
+  loss_weights:
+    L: 1.0        # Highest weight for primary parameter
+    DCR: 0.9      # Important for power applications
+    Q_factor: 0.8 # Key for RF applications
+    SRF: 0.7      # Important for high-frequency use
+    Isat: 0.9     # Critical for power applications
+    ACR: 0.6      # Secondary parameter
+  
+  # Uncertainty settings
+  uncertainty:
+    monte_carlo_samples: 50
+    confidence_interval: 0.95
+    rejection_threshold: 0.15  # Reject predictions with >15% uncertainty
+
+# Validation rules for inductor parameters
+validation:
+  # Physical consistency checks
+  consistency_rules:
+    - "L > 0"
+    - "DCR >= 0"
+    - "Q_factor > 0"
+    - "SRF > 0"
+    - "Isat > 0"
+    - "ACR >= DCR"  # AC resistance >= DC resistance
+    
+  # Electromagnetic relationships
+  electromagnetic_rules:
+    - "SRF ≈ 1 / (2 * π * sqrt(L * C_parasitic))"  # SRF formula
+    - "Q_factor ≈ (2 * π * f * L) / ACR"  # Q factor definition
+    - "ACR >= DCR"  # Skin effect increases resistance
+    
+  # Warning thresholds
+  warnings:
+    low_q_factor: 10        # Q < 10
+    low_srf: 1e6           # SRF < 1 MHz
+    high_dcr: 10.0         # DCR > 10 Ω
+    low_saturation: 0.01   # Isat < 10 mA
+    
+  # Error thresholds  
+  errors:
+    negative_inductance: "L <= 0"
+    impossible_srf: "SRF <= 0"
+    negative_current: "Isat <= 0"
+
+# Inductor type classification
+inductor_types:
+  power:
+    description: "Power inductors for DC-DC converters"
+    typical_ranges:
+      L: [1e-6, 100e-6]
+      DCR: [0.001, 0.1]
+      Isat: [0.1, 20.0]
+      Q_factor: [20, 100]
+      
+  rf:
+    description: "RF inductors for high frequency circuits"
+    typical_ranges:
+      L: [1e-9, 10e-6]
+      DCR: [0.01, 10.0]
+      SRF: [10e6, 10e9]
+      Q_factor: [30, 200]
+      
+  signal:
+    description: "General purpose signal inductors"
+    typical_ranges:
+      L: [1e-6, 100e-3]
+      DCR: [0.1, 100.0]
+      Q_factor: [10, 100]
+      
+  filter:
+    description: "Inductors for filter applications"
+    typical_ranges:
+      L: [1e-3, 1.0]
+      DCR: [0.1, 50.0]
+      Q_factor: [5, 50]
+
+# Core material estimation
+core_materials:
+  air_core:
+    characteristics:
+      - "linear_saturation" 
+      - "high_srf"
+      - "low_energy_storage"
+      
+  ferrite:
+    characteristics:
+      - "high_permeability"
+      - "saturable"
+      - "frequency_dependent"
+      
+  iron_powder:
+    characteristics:
+      - "distributed_gap"
+      - "good_saturation"
+      - "moderate_frequency"
+
+# Test conditions and standards
+test_conditions:
+  # Standard test frequencies
+  frequencies:
+    dc: 0
+    low_freq: 1e3
+    mid_freq: 100e3
+    high_freq: 1e6
+    srf_test: "auto"  # Automatically determine
+    
+  # Test signal levels
+  signal_levels:
+    small_signal: 0.1  # V
+    large_signal: 1.0  # V
+    saturation_test: 5.0  # V
+    
+  # Environmental conditions
+  environment:
+    temperature: 25  # °C
+    humidity: "controlled"
+    
+  # Measurement standards
+  standards:
+    impedance_measurement: "IEC 62024"
+    q_factor: "IEC 62024"
+    saturation: "manufacturer_specified"
+
+# Performance metrics
+performance_metrics:
+  # Accuracy targets
+  accuracy:
+    L: 0.05    # ±5%
+    DCR: 0.02  # ±2%
+    Q_factor: 0.10  # ±10%
+    SRF: 0.08  # ±8%
+    Isat: 0.15 # ±15%
+    ACR: 0.12  # ±12%
+    
+  # Validation metrics
+  validation:
+    min_r_squared: 0.85
+    max_relative_error: 0.25
+    uncertainty_coverage: 0.90  # 90% of points within confidence interval
+
+# Visualization settings
+visualization:
+  # Plot configurations
+  plots:
+    impedance_vs_frequency:
+      xscale: "log"
+      yscale: "log"
+      markers: true
+      
+    inductance_vs_current:
+      xscale: "linear" 
+      yscale: "linear"
+      saturation_marker: true
+      
+    q_factor_vs_frequency:
+      xscale: "log"
+      yscale: "linear"
+      peak_annotation: true
+      
+  # Report generation
+  reports:
+    include_uncertainty: true
+    show_validation: true
+    compare_to_typical: true

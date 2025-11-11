@@ -1,0 +1,220 @@
+# PEARLNN Default Configuration
+# This file contains the default configuration for all PEARLNN components
+
+# Model Configuration
+model:
+  # Neural network architecture
+  hidden_layers: [512, 256, 128]
+  dropout_rate: 0.2
+  activation: "relu"
+  
+  # Training parameters
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 1000
+  kl_weight: 0.01  # Weight for Bayesian KL divergence loss
+  
+  # Bayesian inference
+  monte_carlo_samples: 50
+  prior_sigma: 1.0
+  
+  # Optimization
+  optimizer: "adam"
+  weight_decay: 0.0001
+  gradient_clip: 1.0
+
+# Training Configuration
+training:
+  # Early stopping
+  early_stopping_patience: 50
+  early_stopping_delta: 0.001
+  
+  # Validation
+  validation_split: 0.2
+  cross_validation_folds: 5
+  
+  # Performance
+  max_training_time: 3600  # seconds
+  use_gpu: true
+  num_workers: 4
+  
+  # Checkpointing
+  save_checkpoints: true
+  checkpoint_interval: 100
+  keep_best_only: true
+
+# Data Processing Configuration
+data_processing:
+  # CSV processing
+  csv:
+    time_column_auto_detect: true
+    default_time_column: "time"
+    sampling_rate_estimation: true
+    
+  # Image processing
+  image:
+    preprocessing:
+      enhance_contrast: true
+      remove_grid: true
+      invert_if_needed: true
+    extraction:
+      method: "projection"  # projection, contour, or hybrid
+      min_curve_points: 10
+      smoothing_window: 5
+      
+  # Feature extraction
+  features:
+    time_domain: true
+    frequency_domain: true
+    statistical: true
+    shape_characteristics: true
+    normalization: "standardize"  # standardize, minmax, robust
+
+# Community Configuration
+community:
+  # Synchronization
+  sync_on_startup: true
+  auto_upload: true
+  upload_interval: 86400  # 24 hours in seconds
+  
+  # Privacy
+  contribution_anonymity: true
+  share_training_data: false
+  share_model_improvements: true
+  
+  # Network settings
+  ipfs_gateways:
+    - "https://ipfs.io/ipfs/"
+    - "https://gateway.pinata.cloud/ipfs/"
+    - "https://cloudflare-ipfs.com/ipfs/"
+    - "https://dweb.link/ipfs/"
+  
+  # Contribution tracking
+  track_contributions: true
+  max_contributions_stored: 1000
+
+# Component-specific Configuration
+components:
+  # Global component settings
+  default:
+    uncertainty_threshold: 0.1  # Reject predictions with uncertainty > 10%
+    confidence_interval: 0.95   # 95% confidence intervals
+    
+  # Inductor-specific configuration
+  inductor:
+    parameters: ["L", "DCR", "Q_factor", "SRF", "Isat", "ACR"]
+    input_features: 35
+    feature_groups:
+      - "impedance_characteristics"
+      - "frequency_response"
+      - "q_factor_measurements"
+      - "saturation_behavior"
+    
+    # Parameter ranges for validation
+    parameter_ranges:
+      L:
+        min: 1e-9
+        max: 1.0
+        units: "H"
+      DCR:
+        min: 0.001
+        max: 100.0
+        units: "Ω"
+      Q_factor:
+        min: 1
+        max: 500
+        units: ""
+      SRF:
+        min: 1e6
+        max: 10e9
+        units: "Hz"
+      Isat:
+        min: 0.001
+        max: 100.0
+        units: "A"
+      ACR:
+        min: 0.001
+        max: 10.0
+        units: "Ω"
+    
+    # Feature extraction settings
+    feature_extraction:
+      frequency_bands: [1e3, 1e6, 10e6]  # Hz
+      impedance_reference: 50  # Ω
+      q_measurement_frequency: 1e6  # Hz
+
+# Path Configuration
+paths:
+  # Directory structure
+  models_dir: "models"
+  data_dir: "data"
+  cache_dir: "cache"
+  community_dir: "community"
+  results_dir: "results"
+  logs_dir: "logs"
+  
+  # File naming
+  model_filename: "{component}_model_{timestamp}.pt"
+  results_filename: "analysis_{component}_{timestamp}.json"
+  contribution_filename: "contribution_{timestamp}.json"
+
+# Logging Configuration
+logging:
+  # Log levels
+  console_level: "INFO"
+  file_level: "DEBUG"
+  log_file: "pearlnn.log"
+  
+  # Log formatting
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+  
+  # Log rotation
+  max_file_size: 10485760  # 10 MB
+  backup_count: 5
+
+# Visualization Configuration
+visualization:
+  # Plot styles
+  style: "default"  # default, seaborn, dark
+  color_palette: "husl"
+  
+  # Figure settings
+  dpi: 300
+  figure_size:
+    default: [10, 6]
+    comparison: [12, 8]
+    training: [10, 6]
+    
+  # Save settings
+  save_format: "png"  # png, pdf, svg
+  save_quality: 95
+
+# Performance Configuration
+performance:
+  # Caching
+  enable_caching: true
+  cache_max_age: 86400  # 24 hours in seconds
+  
+  # Parallel processing
+  max_workers: 4
+  chunk_size: 1000
+  
+  # Memory management
+  max_memory_usage: 0.8  # 80% of available memory
+  cleanup_interval: 3600  # 1 hour in seconds
+
+# Advanced Configuration
+advanced:
+  # Bayesian settings
+  variational_samples: 10
+  mc_dropout_rate: 0.1
+  
+  # Regularization
+  l2_regularization: 0.001
+  gradient_noise: 0.01
+  
+  # Experimental features
+  enable_experimental: false
+  use_attention: false
+  ensemble_size: 1

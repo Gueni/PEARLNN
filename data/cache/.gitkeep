@@ -1,0 +1,15 @@
+# This file ensures the cache directory exists in the repository
+# Temporary cache files for faster processing are stored here
+# This directory is gitignored and can be safely cleared
+
+# Expected structure:
+# data/cache/
+# ├── feature_extraction/
+# │   ├── waveform_features.pkl
+# │   └── image_processing_cache/
+# ├── model_predictions/
+# │   └── prediction_cache.json
+# ├── downloaded_files/
+# │   └── temp_downloads/
+# └── cleanup/
+#     └── old_cache_files/

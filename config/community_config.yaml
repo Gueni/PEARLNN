@@ -1,0 +1,210 @@
+# PEARLNN Community Configuration
+# Settings for community model sharing and collaboration
+
+# Community Identification
+community:
+  name: "PEARLNN Community"
+  version: "1.0"
+  description: "Open community for electronics parameter fitting"
+  
+  # Contact information
+  contact:
+    email: "community@pearlnn.dev"
+    website: "https://github.com/pearlnn/pearlnn"
+    discussions: "https://github.com/pearlnn/pearlnn/discussions"
+
+# Model Sharing Configuration
+model_sharing:
+  # Upload settings
+  upload:
+    enabled: true
+    require_validation: true
+    min_accuracy: 0.85  # Minimum validation accuracy to share
+    max_file_size: 100e6  # 100 MB
+    
+  # Download settings
+  download:
+    enabled: true
+    auto_update: true
+    update_check_interval: 86400  # 24 hours in seconds
+    
+  # Version control
+  versioning:
+    enabled: true
+    max_versions_stored: 10
+    version_schema: "semantic"  # semantic, timestamp, incremental
+
+# IPFS Configuration
+ipfs:
+  # Gateway endpoints
+  gateways:
+    - "https://ipfs.io/ipfs/"
+    - "https://gateway.pinata.cloud/ipfs/"
+    - "https://cloudflare-ipfs.com/ipfs/"
+    - "https://dweb.link/ipfs/"
+    - "https://ipfs.infura.io/ipfs/"
+    
+  # Upload endpoints
+  upload_endpoints:
+    - "https://ipfs.infura.io:5001/api/v0/add"
+    - "https://api.web3.storage/upload"
+    
+  # Pinning services
+  pinning:
+    enabled: false  # Requires API keys
+    services: []
+    
+  # Fallback strategies
+  fallback:
+    enabled: true
+    retry_attempts: 3
+    timeout: 30  # seconds
+
+# Contribution System
+contributions:
+  # Anonymity settings
+  anonymity:
+    enabled: true
+    hash_identity: true
+    no_personal_data: true
+    
+  # Contribution tracking
+  tracking:
+    enabled: true
+    local_storage: true
+    max_local_contributions: 1000
+    
+  # Quality control
+  quality:
+    min_contributions: 1
+    reputation_system: false  # Future feature
+    voting_system: false  # Future feature
+
+# Component-specific Community Settings
+components:
+  # Global component settings
+  default:
+    sharing_enabled: true
+    require_validation: true
+    min_contributors: 1
+    
+  # Inductor-specific settings
+  inductor:
+    sharing_enabled: true
+    model_update_frequency: 7  # days
+    min_validation_accuracy: 0.90
+    
+  # Future components (commented out for now)
+  # mosfet:
+  #   sharing_enabled: true
+  #   model_update_frequency: 14
+  #   min_validation_accuracy: 0.85
+  # 
+  # opamp:
+  #   sharing_enabled: true  
+  #   model_update_frequency: 14
+  #   min_validation_accuracy: 0.88
+  # 
+  # capacitor:
+  #   sharing_enabled: true
+  #   model_update_frequency: 10
+  #   min_validation_accuracy: 0.87
+
+# Statistics and Analytics
+analytics:
+  # Usage statistics
+  usage_tracking:
+    enabled: true
+    anonymous: true
+    track_component_usage: true
+    track_model_performance: true
+    
+  # Community metrics
+  metrics:
+    track_contributions: true
+    track_model_improvements: true
+    track_community_growth: true
+    
+  # Data retention
+  retention:
+    max_stats_age: 365  # days
+    aggregate_old_data: true
+
+# Security and Privacy
+security:
+  # Data privacy
+  privacy:
+    no_personal_data: true
+    anonymize_contributions: true
+    local_data_only: false
+    
+  # Model security
+  model_validation:
+    checksum_verification: true
+    signature_verification: false  # Future feature
+    malware_scanning: false  # Future feature
+    
+  # Network security
+  network:
+    verify_ssl: true
+    timeout: 30
+    max_redirects: 5
+
+# Performance Optimization
+performance:
+  # Caching
+  caching:
+    enabled: true
+    model_cache_size: 500e6  # 500 MB
+    feature_cache_size: 100e6  # 100 MB
+    cache_ttl: 604800  # 7 days in seconds
+    
+  # Bandwidth management
+  bandwidth:
+    max_download_size: 50e6  # 50 MB
+    max_upload_size: 10e6  # 10 MB
+    throttle_downloads: false
+    
+  # Concurrent operations
+  concurrency:
+    max_downloads: 3
+    max_uploads: 1
+    download_timeout: 60  # seconds
+
+# Backup and Recovery
+backup:
+  # Local backups
+  local:
+    enabled: true
+    backup_interval: 86400  # 24 hours
+    max_backups: 7
+    backup_dir: "backups"
+    
+  # Cloud backups (future feature)
+  cloud:
+    enabled: false
+    services: []
+    
+  # Recovery
+  recovery:
+    auto_recovery: true
+    recovery_timeout: 300  # seconds
+
+# Experimental Features
+experimental:
+  # Beta features
+  beta_features:
+    enabled: false
+    auto_update_beta: false
+    report_crashes: true
+    
+  # Research features
+  research:
+    participate_studies: false
+    share_anonymized_data: false
+    experimental_models: false
+    
+  # Community governance (future)
+  governance:
+    voting_enabled: false
+    proposal_system: false
